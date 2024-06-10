@@ -2,7 +2,7 @@
 
 import {defineComponent} from "vue";
 import store from "../../store";
-import {mapState, mapActions, mapGetters, mapMutations} from "vuex";
+import {mapState, mapActions, mapMutations} from "vuex";
 
 export default defineComponent({
   computed: {
@@ -11,24 +11,52 @@ export default defineComponent({
     },
 
     ...mapState({
+      name: state => state.user.name,
+      secondName: state => state.user.secondName,
+      middleName: state => state.user.middleName,
+      SNILS: state => state.user.SNILS,
+      position: state => state.user.position,
+      num: state => state.user.num,
+      email: state => state.user.email,
       positions: state => state.user.positions
     })
   },
   mounted() {
     this.getPosition();
+    this.getUser()
   },
   methods: {
     ...mapMutations({
       setPositions: 'user/setPositions'
     }),
     ...mapActions({
-      getPosition: 'user/getPosition'
+      getUser: 'user/getUser',
+      getPosition: 'user/getPosition',
+      changeUser: 'user/changeUser'
     }),
+
+    isEmpty(value) {
+      return (value === undefined || value === null)
+    },
+
+    submitForm() {
+      const userData = {
+        name: this.$refs.name.value,
+        secondName: this.$refs.secondName.value,
+        middleName: this.$refs.middleName.value,
+        SNILS: this.$refs.SNILS.value,
+        position: this.$refs.position.value,
+        num: this.$refs.num.value,
+        email: this.$refs.email.value,
+      };
+      console.log(userData)
+      this.changeUser(userData)
+    },
 
     changeColor(event) {
       event.target.style.color = '#333333';
     }
-  }
+  },
 })
 </script>
 
@@ -64,12 +92,13 @@ export default defineComponent({
       <!--  body   -->
 
       <div class="panel-body pad-none">
-        <div class="tile-body" style="height: 667px">
+        <div class="tile-body" style="height: auto">
           <div class="text-large text-title">
             Заголовок
           </div>
           <div class="d-flex flex-col">
-            <form class="d-flex flex-col" style="height: 100%">
+            <form class="d-flex flex-col" style="height: 100%" oninvalid="{`text-error`}" @submit.prevent="submitForm">
+
               <!--  input Имя -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
@@ -90,6 +119,8 @@ export default defineComponent({
                   <div class="input-container">
                     <div class="border-none color-primary pad-left-1 text-small">Имя</div>
                     <input
+                        v-model="name"
+                        ref="name"
                         class="some-input"
                         type="text"
                         placeholder="не указано"
@@ -118,9 +149,11 @@ export default defineComponent({
                   <div class="input-container">
                     <div class="border-none color-primary text-small pad-left-1">Фамилия</div>
                     <input
+                        ref="secondName"
                         class="some-input"
                         type="text"
                         placeholder="не указано"
+                        v-model="secondName"
                         required>
                   </div>
                 </div>
@@ -146,10 +179,12 @@ export default defineComponent({
                   <div class="input-container">
                     <div class="border-none color-primary text-small pad-left-1">Отчество</div>
                     <input
+                        ref="middleName"
+                        v-model="middleName"
                         class="some-input"
                         type="text"
                         placeholder="не указано"
-                        required>
+                    >
                   </div>
                 </div>
               </div>
@@ -168,10 +203,12 @@ export default defineComponent({
                   <div class="input-container">
                     <div class="border-none color-primary text-small pad-left-1">СНИЛС</div>
                     <input
+                        ref="SNILS"
+                        v-model="SNILS"
                         class="some-input"
                         type="text"
                         placeholder="не указано"
-                        required>
+                    >
                   </div>
                 </div>
               </div>
@@ -189,7 +226,12 @@ export default defineComponent({
                   </div>
                   <div class="input-container">
                     <div class="border-none color-primary text-small pad-left-1">Должность</div>
-                    <select class="position" @change="changeColor">
+                    <select
+                        ref="position"
+                        v-model="position"
+                        class="position"
+                        @change="changeColor"
+                        required>
                       <option disabled selected>не указано</option>
                       <option v-for="position in positions" :key="positions[position]" :value="position">
                         {{ position }}
@@ -200,7 +242,7 @@ export default defineComponent({
                 </div>
               </div>
 
-              <div class="text-large text-title pad-top-6">
+              <div class="text-large text-title pad-top-7">
                 Заголовок
               </div>
 
@@ -224,8 +266,10 @@ export default defineComponent({
                   <div class="input-container">
                     <div class="border-none color-primary text-small pad-left-1">Телефон</div>
                     <input
+                        ref="num"
+                        v-model="num"
                         class="some-input"
-                        type="number"
+                        type="tel"
                         placeholder="не указано"
                         required>
                   </div>
@@ -233,7 +277,7 @@ export default defineComponent({
               </div>
 
               <!--  input Почта -->
-              <div class="form-control form-control-icon-left">
+              <div class="form-control form-control-icon-left mar-bot-9 pad-bot-4">
                 <div class="d-flex flex-v-center">
                   <div class="svg-wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -250,8 +294,10 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-left-1">Электронная почта</div>
+                    <div class="border-none color-primary text-small pad-left-1 pad-top-2">Электронная почта</div>
                     <input
+                        ref="email"
+                        v-model="email"
                         class="some-input"
                         type="email"
                         placeholder="не указано"
@@ -259,15 +305,17 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-            </form>
-          </div>
-        </div>
-        <!--    footer   -->
 
-        <div class="modal-footer pad-none pad-5">
-          <div class="pull-right">
-            <button class="pad-right-4 btn btn-inline  color-link text-large">Отмена</button>
-            <button class="btn btn-primary radius-1 text-large">Button</button>
+              <!--    footer   -->
+              <hr class="mar-top-8" style="width: 383px; margin-left: -24px"/>
+
+              <div class="modal-footer pad-none mar-none">
+                <div class="pull-right ">
+                  <button class="pad-right-4 btn btn-inline  color-link text-large">Отмена</button>
+                  <button type="submit" class="btn btn-primary radius-1 text-large">Button</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -325,11 +373,15 @@ export default defineComponent({
   padding-left: 10px;
 }
 
+.input-container div:has(+ input:invalid){
+  color: #EA3849;
+}
+
 input[type=number] {
   appearance: none;
 }
 
-input[type=text], [type=number], [type=email] {
+input[type=text], [type=tel], [type=email] {
   width: 100%;
   height: 30px;
   border: 0;
@@ -359,11 +411,13 @@ input::placeholder {
   appearance: none;
   background: url("../assets/arrow_drop_down.svg") no-repeat;
   background-position-x: calc(100%);
-  option{
+
+  option {
     border: 0;
     color: #333333;
   }
-  option[disabled]{
+
+  option[disabled] {
     display: none;
   }
 }

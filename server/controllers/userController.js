@@ -12,31 +12,31 @@ class UserController {
         const list = []
 
         if (!params.name) {
-            list.append("name")
+            list.push("name")
         }
 
         if (!params.secondName) {
-            list.append("secondName")
+            list.push("secondName")
         }
 
         if (!params.position) {
-            list.append("position")
+            list.push("position")
         }
 
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        const phonePattern = /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/;
+        let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        let phonePattern = /^\+7\d{10}$/;
 
 
         if (!emailPattern.test(params.email)){
-            list.append("email")
+            list.push("email")
         }
 
-        if (!phonePattern.text(params.num)){
-            list.append("num")
+        if (!phonePattern.test(params.num)){
+            list.push("num",params.num)
         }
 
         if (params.SNILS && params.SNILS.length !== 11) {
-            list.append("SNILS")
+            list.push("SNILS")
         }
 
         if (list.length > 0) {

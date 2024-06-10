@@ -76,18 +76,20 @@ export const userModule = {
             }
         },
 
-        async changeUser({state}) {
-            const params = {
-                name: state.name,
-                secondName: state.secondName,
-                middleName: state.middleName,
-                SNILS: state.SNILS,
-                position: state.position,
-                num: state.num,
-                email: state.email
+        async changeUser({ commit }, params) {
+            try {
+                await UserServices.changeUser(params);
+                commit("setName", params.name);
+                commit("setSecondName", params.secondName);
+                commit("setMiddleName", params.middleName);
+                commit("setSNILS", params.SNILS);
+                commit("setPosition", params.position);
+                commit("setNumber", params.num);
+                commit("setEmail", params.email);
+            } catch (e) {
+                console.log(e)
+                alert("Ошибка изменения данных пользователя");
             }
-
-            return await UserServices.changeUser(params)
         }
     },
     namespaced: true
