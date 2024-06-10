@@ -20,19 +20,19 @@ export const userModule = {
             state.name = name
         },
 
-        setSecondName(state, secondName){
+        setSecondName(state, secondName) {
             state.secondName = secondName
         },
 
-        setMiddleName(state, middleName){
+        setMiddleName(state, middleName) {
             state.middleName = middleName
         },
 
-        setSNILS(state, SNILS){
+        setSNILS(state, SNILS) {
             state.SNILS = SNILS
         },
 
-        setPosition(state, position){
+        setPosition(state, position) {
             state.position = position
         },
 
@@ -40,11 +40,11 @@ export const userModule = {
             state.positions = positions
         },
 
-        setNumber(state, number){
+        setNumber(state, number) {
             state.num = number
         },
 
-        setEmail(state, email){
+        setEmail(state, email) {
             state.email = email
         }
     },
@@ -53,14 +53,14 @@ export const userModule = {
         async getUser({commit}) {
             try {
                 const {data} = await UserServices.getUser()
-                commit.setName(data.name)
-                commit.setSecondName(data.secondName)
-                commit.setMiddleName(data.middleName)
-                commit.setSNILS(data.SNILS)
-                commit.setPosition(data.position)
-                commit.setNumber(data.num)
-                commit.setEmail(data.email)
-            }catch (e) {
+                commit("setName", data.name)
+                commit("setSecondName", data.secondName)
+                commit("setMiddleName", data.middleName)
+                commit("setSNILS", data.SNILS)
+                commit("setPosition", data.position)
+                commit("setNumber", data.num)
+                commit("setEmail", data.email)
+            } catch (e) {
                 alert("Ошибка получения пользователя")
             }
         },
@@ -68,9 +68,10 @@ export const userModule = {
         async getPosition({state, commit}) {
             try {
                 const {data} = await UserServices.getPosition()
-                commit.setPositions(data)
+                commit("setPositions", data)
                 return state.positions
-            }catch (e) {
+            } catch (e) {
+                console.log(e)
                 alert("Ошибка получения должностей")
             }
         },

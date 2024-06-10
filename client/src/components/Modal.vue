@@ -1,35 +1,33 @@
 <script>
 
 import {defineComponent} from "vue";
-import {UserServices} from "../../services/UserServices";
 import store from "../../store";
-import {user} from "../../../server/mocks";
 import {mapState, mapActions, mapGetters, mapMutations} from "vuex";
 
 export default defineComponent({
   computed: {
-    user() {
-      return user
-    },
     store() {
       return store
-    }
-  },
-
-  mounted() {
-
-  },
-
-  methods: {
-    ...mapActions({
-      user: 'user/getUser',
-      positions: 'user/getPosition',
-      changeUser: 'user/changeUser'
-    }),
+    },
 
     ...mapState({
       positions: state => state.user.positions
     })
+  },
+  mounted() {
+    this.getPosition();
+  },
+  methods: {
+    ...mapMutations({
+      setPositions: 'user/setPositions'
+    }),
+    ...mapActions({
+      getPosition: 'user/getPosition'
+    }),
+
+    changeColor(event) {
+      event.target.style.color = '#333333';
+    }
   }
 })
 </script>
@@ -90,7 +88,7 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small">Имя</div>
+                    <div class="border-none color-primary pad-left-1 text-small">Имя</div>
                     <input
                         class="some-input"
                         type="text"
@@ -118,7 +116,7 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-top-2">Фамилия</div>
+                    <div class="border-none color-primary text-small pad-left-1">Фамилия</div>
                     <input
                         class="some-input"
                         type="text"
@@ -146,7 +144,7 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-top-2">Отчество</div>
+                    <div class="border-none color-primary text-small pad-left-1">Отчество</div>
                     <input
                         class="some-input"
                         type="text"
@@ -168,7 +166,7 @@ export default defineComponent({
 
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-top-2">СНИЛС</div>
+                    <div class="border-none color-primary text-small pad-left-1">СНИЛС</div>
                     <input
                         class="some-input"
                         type="text"
@@ -190,15 +188,14 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-top-2">Должность</div>
-                    {{ user.positions }}
-                    <select class="position">
-
-                      <!--                      <option value="1">Volvo</option>-->
-                      <!--                      <option value="saab">Saab</option>-->
-                      <!--                      <option value="fiat">Fiat</option>-->
-                      <!--                      <option value="audi">Audi</option>-->
+                    <div class="border-none color-primary text-small pad-left-1">Должность</div>
+                    <select class="position" @change="changeColor">
+                      <option disabled selected>не указано</option>
+                      <option v-for="position in positions" :key="positions[position]" :value="position">
+                        {{ position }}
+                      </option>
                     </select>
+
                   </div>
                 </div>
               </div>
@@ -225,7 +222,7 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-top-1">Телефон</div>
+                    <div class="border-none color-primary text-small pad-left-1">Телефон</div>
                     <input
                         class="some-input"
                         type="number"
@@ -253,7 +250,7 @@ export default defineComponent({
                     </svg>
                   </div>
                   <div class="input-container">
-                    <div class="border-none color-primary text-small pad-top-2">Электронная почта</div>
+                    <div class="border-none color-primary text-small pad-left-1">Электронная почта</div>
                     <input
                         class="some-input"
                         type="email"
@@ -324,8 +321,8 @@ export default defineComponent({
 
 .input-container {
   width: 110%;
-  padding-top: 13px;
-  padding-left: 13px;
+  padding-top: 15px;
+  padding-left: 10px;
 }
 
 input[type=number] {
@@ -335,12 +332,10 @@ input[type=number] {
 input[type=text], [type=number], [type=email] {
   width: 100%;
   height: 30px;
-  padding-bottom: 15px;
   border: 0;
   border-bottom: #333333 1px solid;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  padding-top: 12px;
 }
 
 input::placeholder {
@@ -356,16 +351,23 @@ input::placeholder {
 .position {
   width: 100%;
   height: 30px;
-  padding-bottom: 15px;
   border: 0;
+  color: #BABBBE;
   border-bottom: #333333 1px solid;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  padding-top: 12px;
   appearance: none;
   background: url("../assets/arrow_drop_down.svg") no-repeat;
   background-position-x: calc(100%);
+  option{
+    border: 0;
+    color: #333333;
+  }
+  option[disabled]{
+    display: none;
+  }
 }
+
 
 input, .position:focus-visible {
   outline: none;
