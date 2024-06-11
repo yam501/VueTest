@@ -40,7 +40,7 @@ class UserController {
         }
 
         if (list.length > 0) {
-            return res.status(400).send(list)
+            return res.status(400).json(list)
         }
 
         user = {... params}

@@ -10,7 +10,8 @@ export const userModule = {
         num: '',
         email: '',
 
-        positions: []
+        positions: [],
+        invalidFields: []
     }),
 
     getters: {},
@@ -46,6 +47,9 @@ export const userModule = {
 
         setEmail(state, email) {
             state.email = email
+        },
+        setInvalidFields(state, array){
+            state.invalidFields = array
         }
     },
 
@@ -61,7 +65,7 @@ export const userModule = {
                 commit("setNumber", data.num)
                 commit("setEmail", data.email)
             } catch (e) {
-                console.log(e.response.data)
+                console.log(e)
             }
         },
 
@@ -71,7 +75,7 @@ export const userModule = {
                 commit("setPositions", data)
                 return state.positions
             } catch (e) {
-                console.log(e.response.data)
+                console.log(e)
             }
         },
 
@@ -86,7 +90,9 @@ export const userModule = {
                 commit("setNumber", params.num);
                 commit("setEmail", params.email);
             } catch (e) {
-                console.log(e.response.data)
+                const invalidFields = e.response.data;
+                commit('setInvalidFields', invalidFields);
+                return invalidFields;
             }
         }
     },
