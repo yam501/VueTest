@@ -61,7 +61,7 @@ export const userModule = {
                 commit("setNumber", data.num)
                 commit("setEmail", data.email)
             } catch (e) {
-                alert("Ошибка получения пользователя")
+                console.log(e.response.data)
             }
         },
 
@@ -71,8 +71,7 @@ export const userModule = {
                 commit("setPositions", data)
                 return state.positions
             } catch (e) {
-                console.log(e)
-                alert("Ошибка получения должностей")
+                console.log(e.response.data)
             }
         },
 
@@ -87,8 +86,7 @@ export const userModule = {
                 commit("setNumber", params.num);
                 commit("setEmail", params.email);
             } catch (e) {
-                console.log(e)
-                alert("Ошибка изменения данных пользователя");
+                console.log(e.response.data)
             }
         }
     },

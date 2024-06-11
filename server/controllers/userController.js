@@ -24,25 +24,24 @@ class UserController {
         }
 
         let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        let phonePattern = /^\+7\d{10}$/;
-
+        let phonePattern = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
+        let snilsPattern = /^\d{3}-\d{3}-\d{3} \d{2}$/;
 
         if (!emailPattern.test(params.email)){
             list.push("email")
         }
 
         if (!phonePattern.test(params.num)){
-            list.push("num",params.num)
+            list.push("number")
         }
 
-        if (params.SNILS && params.SNILS.length !== 11) {
+        if (!snilsPattern.test(params.SNILS) && params.SNILS){
             list.push("SNILS")
         }
 
         if (list.length > 0) {
             return res.status(400).send(list)
         }
-
 
         user = {... params}
 

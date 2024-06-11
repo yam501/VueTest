@@ -12,9 +12,9 @@ let user = {
     name: 'Александр',
     secondName: 'Александрович',
     middleName: 'Александров',
-    SNILS: '11111111111',
+    SNILS: '111-111-111 11',
     position: position[5],
-    num: '+79876541221',
+    num: '+7 (987) 654-32-10',
     email: 'aleks@gmail.com'
 }
 

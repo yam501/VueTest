@@ -3,8 +3,17 @@
 import {defineComponent} from "vue";
 import store from "../../store";
 import {mapState, mapActions, mapMutations} from "vuex";
+import PhoneInputMask from "@/inputMask/PhoneInputMask";
+import SnilsInputMask from "@/inputMask/SnilsInputMask";
 
 export default defineComponent({
+  data() {
+    return {
+      phoneMask: new PhoneInputMask(),
+      snilsMask: new SnilsInputMask()
+    }
+  },
+
   computed: {
     store() {
       return store
@@ -49,12 +58,27 @@ export default defineComponent({
         num: this.$refs.num.value,
         email: this.$refs.email.value,
       };
-      console.log(userData)
       this.changeUser(userData)
     },
 
     changeColor(event) {
       event.target.style.color = '#333333';
+    },
+
+    applyPhoneMask(event) {
+      const input = event.target;
+      const inputValue = input.value;
+      const formattedValue = this.phoneMask.formatNumberToClient(inputValue);
+      input.value = formattedValue;
+      this.num = formattedValue;
+    },
+
+    applySnilsMask(event) {
+      const input = event.target;
+      const inputValue = input.value;
+      const formattedValue = this.snilsMask.formatNumberToClient(inputValue);
+      input.value = formattedValue;
+      this.num = formattedValue;
     }
   },
 })
@@ -70,7 +94,7 @@ export default defineComponent({
       <div class="modal-header bg-grey-lighter">
         <div class="pull-left text-header text-large pad-left-3 ">Заголовок</div>
         <div class="col">
-          <button class="pull-right btn btn-icon round">
+          <button type="button" class="pull-right btn btn-icon round">
             <div class="icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_2064_6)">
@@ -97,12 +121,13 @@ export default defineComponent({
             Заголовок
           </div>
           <div class="d-flex flex-col">
+            <!--       можно вместо  @submit поставить @submit.prevent, тогда не будет показываться перезагрузка   -->
             <form class="d-flex flex-col" style="height: 100%" oninvalid="{`text-error`}" @submit.prevent="submitForm">
 
               <!--  input Имя -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clip-path="url(#clip0_1_603)">
                         <path
@@ -116,8 +141,8 @@ export default defineComponent({
                       </defs>
                     </svg>
                   </div>
-                  <div class="input-container">
-                    <div class="border-none color-primary pad-left-1 text-small">Имя</div>
+                  <div class="input_container">
+                    <div class="border-none color-primary pad-left-1 text-small">Имя*</div>
                     <input
                         v-model="name"
                         ref="name"
@@ -132,7 +157,7 @@ export default defineComponent({
               <!--  input Фамилия -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clip-path="url(#clip0_1_603)">
                         <path
@@ -146,8 +171,8 @@ export default defineComponent({
                       </defs>
                     </svg>
                   </div>
-                  <div class="input-container">
-                    <div class="border-none color-primary text-small pad-left-1">Фамилия</div>
+                  <div class="input_container">
+                    <div class="border-none color-primary text-small pad-left-1">Фамилия*</div>
                     <input
                         ref="secondName"
                         class="some-input"
@@ -162,7 +187,7 @@ export default defineComponent({
               <!--  input Отчество  -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clip-path="url(#clip0_1_603)">
                         <path
@@ -176,7 +201,7 @@ export default defineComponent({
                       </defs>
                     </svg>
                   </div>
-                  <div class="input-container">
+                  <div class="input_container">
                     <div class="border-none color-primary text-small pad-left-1">Отчество</div>
                     <input
                         ref="middleName"
@@ -192,7 +217,7 @@ export default defineComponent({
               <!--  input СНИЛС -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                           d="M4 31V23H2V21H6V31H4ZM22 29C22 30.11 21.1 31 20 31H16V29H20V27H18V25H20V23H16V21H20C20.5304 21 21.0391 21.2107 21.4142 21.5858C21.7893 21.9609 22 22.4696 22 23V24.5C22 24.8978 21.842 25.2794 21.5607 25.5607C21.2794 25.842 20.8978 26 20.5 26C20.8978 26 21.2794 26.158 21.5607 26.4393C21.842 26.7206 22 27.1022 22 27.5V29ZM14 29V31H8V27C8 25.89 8.9 25 10 25H12V23H8V21H12C12.5304 21 13.0391 21.2107 13.4142 21.5858C13.7893 21.9609 14 22.4696 14 23V25C14 26.11 13.1 27 12 27H10V29H14Z"
@@ -200,13 +225,15 @@ export default defineComponent({
                     </svg>
 
                   </div>
-                  <div class="input-container">
+                  <div class="input_container">
                     <div class="border-none color-primary text-small pad-left-1">СНИЛС</div>
                     <input
                         ref="SNILS"
                         v-model="SNILS"
                         class="some-input"
                         type="text"
+                        maxlength="14"
+                        @input="applySnilsMask"
                         placeholder="не указано"
                     >
                   </div>
@@ -217,15 +244,15 @@ export default defineComponent({
               <!--  input Должность -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                           d="M20 20H16V18C16 17.4696 15.7893 16.9609 15.4142 16.5858C15.0391 16.2107 14.5304 16 14 16H10C8.89 16 8 16.89 8 18V20H4C2.89 20 2 20.89 2 22V33C2 33.5304 2.21071 34.0391 2.58579 34.4142C2.96086 34.7893 3.46957 35 4 35H20C20.5304 35 21.0391 34.7893 21.4142 34.4142C21.7893 34.0391 22 33.5304 22 33V22C22 21.4696 21.7893 20.9609 21.4142 20.5858C21.0391 20.2107 20.5304 20 20 20ZM10 18H14V20H10V18ZM12 23C12.663 23 13.2989 23.2634 13.7678 23.7322C14.2366 24.2011 14.5 24.837 14.5 25.5C14.5 26.163 14.2366 26.7989 13.7678 27.2678C13.2989 27.7366 12.663 28 12 28C11.337 28 10.7011 27.7366 10.2322 27.2678C9.76339 26.7989 9.5 26.163 9.5 25.5C9.5 24.837 9.76339 24.2011 10.2322 23.7322C10.7011 23.2634 11.337 23 12 23ZM17 33H7V31.75C7 30.37 9.24 29.25 12 29.25C14.76 29.25 17 30.37 17 31.75V33Z"
                           fill="#ACACB3"/>
                     </svg>
                   </div>
-                  <div class="input-container">
-                    <div class="border-none color-primary text-small pad-left-1">Должность</div>
+                  <div class="input_container">
+                    <div class="border-none color-primary text-small pad-left-1">Должность*</div>
                     <select
                         ref="position"
                         v-model="position"
@@ -249,7 +276,7 @@ export default defineComponent({
               <!--  input Телефон -->
               <div class="form-control form-control-icon-left">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clip-path="url(#clip0_1_651)">
                         <path
@@ -263,13 +290,15 @@ export default defineComponent({
                       </defs>
                     </svg>
                   </div>
-                  <div class="input-container">
-                    <div class="border-none color-primary text-small pad-left-1">Телефон</div>
+                  <div class="input_container">
+                    <div class="border-none color-primary text-small pad-left-1">Телефон*</div>
                     <input
                         ref="num"
+                        maxlength="18"
                         v-model="num"
                         class="some-input"
                         type="tel"
+                        @input="applyPhoneMask"
                         placeholder="не указано"
                         required>
                   </div>
@@ -279,7 +308,7 @@ export default defineComponent({
               <!--  input Почта -->
               <div class="form-control form-control-icon-left mar-bot-9 pad-bot-4">
                 <div class="d-flex flex-v-center">
-                  <div class="svg-wrapper">
+                  <div class="svg_wrapper">
                     <svg width="24" height="52" viewBox="0 0 24 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clip-path="url(#clip0_1_644)">
                         <path
@@ -293,8 +322,8 @@ export default defineComponent({
                       </defs>
                     </svg>
                   </div>
-                  <div class="input-container">
-                    <div class="border-none color-primary text-small pad-left-1 pad-top-2">Электронная почта</div>
+                  <div class="input_container">
+                    <div class="border-none color-primary text-small pad-left-1 pad-top-2">Электронная почта*</div>
                     <input
                         ref="email"
                         v-model="email"
@@ -309,9 +338,9 @@ export default defineComponent({
               <!--    footer   -->
               <hr class="mar-top-8" style="width: 383px; margin-left: -24px"/>
 
-              <div class="modal-footer pad-none mar-none">
+              <div class="modal_footer pad-none mar-none">
                 <div class="pull-right ">
-                  <button class="pad-right-4 btn btn-inline  color-link text-large">Отмена</button>
+                  <button type="button" class="pad-right-4 btn btn-inline  color-link text-large">Отмена</button>
                   <button type="submit" class="btn btn-primary radius-1 text-large">Button</button>
                 </div>
               </div>
@@ -361,36 +390,37 @@ export default defineComponent({
   line-height: 24px;
 }
 
-.svg-wrapper {
+.svg_wrapper {
   padding-top: 9px;
   width: 24px;
   height: 52px;
 }
 
-.input-container {
+.input_container {
   width: 110%;
   padding-top: 15px;
   padding-left: 10px;
 }
 
-.input-container div:has(+ input:invalid){
+.input_container div:has(+ input:invalid) {
   color: #EA3849;
 }
 
-input[type=number] {
+.input_container input[type=number] {
   appearance: none;
 }
 
-input[type=text], [type=tel], [type=email] {
+.input_container input[type=text], [type=tel], [type=email] {
   width: 100%;
   height: 30px;
   border: 0;
+  font-family: "Roboto",sans-serif;
   border-bottom: #333333 1px solid;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-input::placeholder {
+.input_container input::placeholder {
   font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -403,6 +433,7 @@ input::placeholder {
 .position {
   width: 100%;
   height: 30px;
+  padding-left: 3px;
   border: 0;
   color: #BABBBE;
   border-bottom: #333333 1px solid;
@@ -423,11 +454,11 @@ input::placeholder {
 }
 
 
-input, .position:focus-visible {
+.input_container input, .position:focus-visible {
   outline: none;
 }
 
-.modal-footer {
+.modal_footer {
   display: flex;
   align-items: center;
   justify-content: end;
